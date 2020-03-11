@@ -13,7 +13,6 @@ var SimpleGame = {
 
     init: function() {
         Player.init();
-        Box.init();
         Treasure.init();
         Score.init();
         SimpleGame.tick();
@@ -37,23 +36,6 @@ var SimpleGame = {
 
     distanceBetween: function(obj1, obj2) {
         return Math.sqrt(Math.pow(obj2.x - obj1.x, 2) + Math.pow(obj2.y - obj1.y, 2));
-    }
-}
-
-var Box = {
-    x: 60,
-    y: 60,
-    width: 90,
-    height: 60,
-
-    init: function() {
-        SimpleGame.space.innerHTML += '<div id="box"></div>';
-        Box.elem = document.getElementById('box');
-        Box.draw();
-    },
-
-    draw: function() {
-        Box.elem.style = 'top: ' + Box.y + 'px; left: ' + Box.x + 'px; width: ' + Box.width + 'px; height: '+ Box.height + 'px;';
     }
 }
 
@@ -102,7 +84,7 @@ var Player = {
     },
 
     draw: function() {
-        Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px; background-color: ' + Player.currentColor() + ';';
+        Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px;';
     },
 
     move: function() {
@@ -134,14 +116,6 @@ var Player = {
             // Left-Down
             Player.y += Player.diagonalSpeed;
             Player.x -= Player.diagonalSpeed;
-        }
-    },
-
-    currentColor: function() {
-        if ( SimpleGame.checkCollision(Player, Box) ) {
-            return '#f00';
-        } else {
-            return '#00f'
         }
     }
 }
