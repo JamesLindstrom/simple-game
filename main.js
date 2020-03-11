@@ -9,6 +9,7 @@ var SimpleGame = {
     tickSpacing: 33, // 30 TPS
     spaceWidth: 640,
     spaceHeight: 480,
+    currentTick: 0,
 
     init: function() {
         Player.init();
@@ -19,7 +20,13 @@ var SimpleGame = {
     },
 
     tick: function() {
+        SimpleGame.currentTick++;
+
         SimpleGame.space.dispatchEvent(gameTick);
+
+        if ( SimpleGame.currentTick == 300 ) {
+            var enemy = new Hazard(1);
+        }
 
         setTimeout(SimpleGame.tick, SimpleGame.tickSpacing);
     },
@@ -47,6 +54,29 @@ var Box = {
 
     draw: function() {
         Box.elem.style = 'top: ' + Box.y + 'px; left: ' + Box.x + 'px; width: ' + Box.width + 'px; height: '+ Box.height + 'px;';
+    }
+}
+
+class Hazard {
+    constructor(id) {
+        this.id = id;
+        this.width = 60;
+        this.height = 60;
+        SimpleGame.space.innerHTML += '<div class="hazard" id="hazard-' + id + '"></div>';
+        this.elem = document.getElementById('hazard-' + id);
+        this.xPlacementRangeMax = SimpleGame.spaceWidth - this.width;
+        this.yPlacementRangeMax = SimpleGame.spaceHeight - this.height;
+        this.place();
+        this.draw();
+    }
+
+    draw() {
+        this.elem.style = 'top: ' + this.y + 'px; left: ' + this.x + 'px; width: ' + this.width + 'px; height: '+ this.height + 'px;';
+    }
+
+    place() {
+        this.x = Math.floor(Math.random() * this.xPlacementRangeMax);
+        this.y = Math.floor(Math.random() * this.yPlacementRangeMax);
     }
 }
 
