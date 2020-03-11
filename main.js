@@ -30,6 +30,10 @@ var SimpleGame = {
         } else {
             return false;
         }
+    },
+
+    distanceBetween: function(obj1, obj2) {
+        return Math.sqrt(Math.pow(obj2.x - obj1.x, 2) + Math.pow(obj2.y - obj1.y, 2));
     }
 }
 
@@ -146,6 +150,11 @@ var Treasure = {
     place: function() {
         Treasure.x = Math.floor(Math.random() * Treasure.xPlacementRangeMax);
         Treasure.y = Math.floor(Math.random() * Treasure.yPlacementRangeMax);
+
+        // Don't allow the treasure to be placed too close to the player.
+        if ( SimpleGame.distanceBetween(Player, Treasure) < 150 ) {
+            Treasure.place();
+        }
     }
 }
 
