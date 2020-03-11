@@ -55,11 +55,12 @@ var Player = {
     y: 225,
     width: 30,
     height: 30,
-    speed: 8,
+    speed: 10,
 
     init: function() {
         SimpleGame.space.innerHTML += '<div id="player"></div>';
         Player.elem = document.getElementById('player');
+        Player.diagonalSpeed = Math.round(Math.sqrt(Math.pow(Player.speed, 2) / 2));
         SimpleGame.space.addEventListener('gameTick', Player.tick, false);
     },
 
@@ -75,14 +76,35 @@ var Player = {
     },
 
     move: function() {
-        // Left
-        if ( keyPressed['37'] ) { Player.x -= Player.speed; }
-        // Up
-        if ( keyPressed['38'] ) { Player.y -= Player.speed; }
-        // Right
-        if ( keyPressed['39'] ) { Player.x += Player.speed; }
-        // Down
-        if ( keyPressed['40'] ) { Player.y += Player.speed; }
+        if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
+            // Left
+            Player.x -= Player.speed;
+        } else if ( keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
+            // Left-Up
+            Player.y -= Player.diagonalSpeed;
+            Player.x -= Player.diagonalSpeed;
+        } else if ( !keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
+            // Up
+            Player.y -= Player.speed;
+        } else if ( !keyPressed['37'] && keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
+            // Right-Up
+            Player.y -= Player.diagonalSpeed;
+            Player.x += Player.diagonalSpeed;
+        } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
+            // Right
+            Player.x += Player.speed;
+        } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && keyPressed['40'] ) {
+            // Right-Down
+            Player.y += Player.diagonalSpeed;
+            Player.x += Player.diagonalSpeed;
+        } else if ( !keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
+            // Down
+            Player.y += Player.speed;
+        } else if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
+            // Left-Down
+            Player.y += Player.diagonalSpeed;
+            Player.x -= Player.diagonalSpeed;
+        }
     },
 
     currentColor: function() {
