@@ -10,4 +10,4 @@ h1 { font-family: Georgia, serif; font-size: 30px; text-align: center; margin: 2
 
 #treasure { background-color: #ff0; position: absolute; width: 30px; height: 30px; }
 
-#score-text { font-size: 14px; font-family: Georgia, serif; }
+#score-text { font-size: 14px; font-family: Georgia, serif; margin-left: 5px; padding-top: 2px; }
