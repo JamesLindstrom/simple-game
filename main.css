@@ -1,0 +1,13 @@
+* { margin: 0; padding: 0; }
+h1 { font-family: Georgia, serif; font-size: 30px; text-align: center; margin: 25px 0; }
+
+/* Game Space */
+#game-space { margin: 0 auto; background-color: #ddd; width: 640px; height: 480px; position: relative; }
+
+#player { background-color: #00f; position: absolute; width: 30px; height: 30px; }
+
+#box { border: 1px solid #000; position: absolute; }
+
+#treasure { background-color: #ff0; position: absolute; width: 30px; height: 30px; }
+
+#score-text { font-size: 14px; font-family: Georgia, serif; }
