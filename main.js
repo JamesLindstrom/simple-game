@@ -87,8 +87,8 @@ class Hazard {
     }
 
     move(object) {
-        if ( object.x >= object.xPlacementRangeMax || object.x <= 0 ) { object.xSpeed *= -1; }
-        if ( object.y >= object.yPlacementRangeMax || object.y <= 0) { object.ySpeed *= -1; }
+        if ( object.x >= object.xPlacementRangeMax || object.x = 0 ) { object.xSpeed *= -1; }
+        if ( object.y >= object.yPlacementRangeMax || object.y = 0) { object.ySpeed *= -1; }
 
         object.x += object.xSpeed;
         object.y += object.ySpeed;
