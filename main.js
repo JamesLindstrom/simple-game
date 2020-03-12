@@ -14,6 +14,7 @@ var SimpleGame = {
     enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
     enemySpeed: 5,
     paused: false,
+    ended: false,
 
     init: function() {
         SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
@@ -23,11 +24,11 @@ var SimpleGame = {
         SimpleGame.tick();
 
         // Pause if "P" is pressed.
-        window.addEventListener('keydown', function(e){ if (e.keyCode == 80) { SimpleGame.pause(); } }, false );
+        window.addEventListener('keydown', function(e){ if (e.keyCode == 80 && !SimpleGame.ended) { SimpleGame.pause(); } }, false );
     },
 
     tick: function() {
-        if ( SimpleGame.paused ) {
+        if ( SimpleGame.paused || SimpleGame.ended ) {
             return false;
         }
 
@@ -79,6 +80,11 @@ var SimpleGame = {
         var enemy = new Hazard(enemyOptions);
     },
 
+    gameOver: function() {
+        SimpleGame.ended = true;
+        SimpleGame.space.className = 'game-over'
+    },
+
     pause: function() {
         if ( SimpleGame.paused == false ) {
             SimpleGame.paused = true;
@@ -110,7 +116,14 @@ class Hazard {
 
     tick(object) {
         object.move(object);
+        object.collide(object);
         object.draw(object);
+    }
+
+    collide(object) {
+        if ( SimpleGame.checkCollision(object, Player) ) {
+            SimpleGame.gameOver();
+        }
     }
 
     move(object) {
