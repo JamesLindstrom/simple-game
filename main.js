@@ -13,6 +13,7 @@ var SimpleGame = {
     enemyCount: 0,
     enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
     enemySpeed: 5,
+    paused: false,
 
     init: function() {
         SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
@@ -20,9 +21,16 @@ var SimpleGame = {
         Treasure.init();
         Score.init();
         SimpleGame.tick();
+
+        // Pause if "P" is pressed.
+        window.addEventListener('keydown', function(e){ if (e.keyCode == 80) { SimpleGame.pause(); } }, false );
     },
 
     tick: function() {
+        if ( SimpleGame.paused ) {
+            return false;
+        }
+
         SimpleGame.currentTick++;
 
         SimpleGame.space.dispatchEvent(gameTick);
@@ -69,6 +77,15 @@ var SimpleGame = {
         }
 
         var enemy = new Hazard(enemyOptions);
+    },
+
+    pause: function() {
+        if ( SimpleGame.paused == false ) {
+            SimpleGame.paused = true;
+        } else {
+            SimpleGame.paused = false;
+            SimpleGame.tick();
+        }
     }
 }
 
