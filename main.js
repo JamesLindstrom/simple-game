@@ -12,8 +12,10 @@ var SimpleGame = {
     currentTick: 0,
     enemyCount: 0,
     enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
+    enemySpeed: 8,
 
     init: function() {
+        SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
         Player.init();
         Treasure.init();
         Score.init();
@@ -29,12 +31,22 @@ var SimpleGame = {
             SimpleGame.enemyCount++;
             var enemyOptions = {};
 
-            if ( SimpleGame.enemyCount % 2 ) {
-                enemyOptions.xSpeed = 8;
+            if ( SimpleGame.enemyCount % 3 === 0 ) {
+                enemyOptions.xSpeed = SimpleGame.enemyDiagonalSpeed;
+                enemyOptions.ySpeed = SimpleGame.enemyDiagonalSpeed;
+            } else if ( SimpleGame.enemyCount % 2 ) {
+                enemyOptions.xSpeed = SimpleGame.enemySpeed;
                 enemyOptions.ySpeed = 0;
             } else {
                 enemyOptions.xSpeed = 0;
-                enemyOptions.ySpeed = 8;
+                enemyOptions.ySpeed = SimpleGame.enemySpeed;
+            }
+
+            if ( SimpleGame.enemyCount > 10 ) {
+                enemyOptions.xSpeed = Math.floor(enemyOptions.xSpeed * 1.3);
+                enemyOptions.ySpeed = Math.floor(enemyOptions.ySpeed * 1.3);
+                enemyOptions.width = 30;
+                enemyOptions.height = 30;
             }
 
             var enemy = new Hazard(enemyOptions);
