@@ -82,8 +82,10 @@ var SimpleGame = {
     pause: function() {
         if ( SimpleGame.paused == false ) {
             SimpleGame.paused = true;
+            SimpleGame.space.className = 'paused';
         } else {
             SimpleGame.paused = false;
+            SimpleGame.space.className = '';
             SimpleGame.tick();
         }
     }
