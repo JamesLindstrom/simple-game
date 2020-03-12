@@ -10,6 +10,8 @@ var SimpleGame = {
     spaceWidth: 640,
     spaceHeight: 480,
     currentTick: 0,
+    enemyCount: 0,
+    enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
 
     init: function() {
         Player.init();
@@ -23,8 +25,19 @@ var SimpleGame = {
 
         SimpleGame.space.dispatchEvent(gameTick);
 
-        if ( SimpleGame.currentTick == 300 ) {
-            var enemy = new Hazard(1);
+        if ( SimpleGame.enemyCount < Math.floor(SimpleGame.currentTick / SimpleGame.enemySpacing) ) {
+            SimpleGame.enemyCount++;
+            var enemyOptions = {};
+
+            if ( SimpleGame.enemyCount % 2 ) {
+                enemyOptions.xSpeed = 8;
+                enemyOptions.ySpeed = 0;
+            } else {
+                enemyOptions.xSpeed = 0;
+                enemyOptions.ySpeed = 8;
+            }
+
+            var enemy = new Hazard(enemyOptions);
         }
 
         setTimeout(SimpleGame.tick, SimpleGame.tickSpacing);
@@ -40,25 +53,48 @@ var SimpleGame = {
 }
 
 class Hazard {
-    constructor(id) {
-        this.id = id;
-        this.width = 60;
-        this.height = 60;
-        SimpleGame.space.innerHTML += '<div class="hazard" id="hazard-' + id + '"></div>';
-        this.elem = document.getElementById('hazard-' + id);
+    constructor(options) {
+        this.id = SimpleGame.enemyCount;
+        this.width = options['width'] || 60;
+        this.height = options['height'] || 60;
+        this.ySpeed = options['ySpeed'] || 0;
+        this.xSpeed = options['xSpeed'] || 0;
+        this.moveDirection = options['moveDirection'] || 'right';
+        SimpleGame.space.innerHTML += '<div class="hazard" id="hazard-' + this.id + '"></div>';
+        this.elem = document.getElementById('hazard-' + this.id);
         this.xPlacementRangeMax = SimpleGame.spaceWidth - this.width;
         this.yPlacementRangeMax = SimpleGame.spaceHeight - this.height;
         this.place();
-        this.draw();
+        var myself = this;
+        SimpleGame.space.addEventListener('gameTick', function(){ myself.tick(myself) }, false);
     }
 
-    draw() {
-        this.elem.style = 'top: ' + this.y + 'px; left: ' + this.x + 'px; width: ' + this.width + 'px; height: '+ this.height + 'px;';
+    tick(object) {
+        object.move(object);
+        object.draw(object);
+    }
+
+    move(object) {
+        if ( object.x >= object.xPlacementRangeMax || object.x <= 0 ) { object.xSpeed *= -1; }
+        if ( object.y >= object.yPlacementRangeMax || object.y <= 0) { object.ySpeed *= -1; }
+
+        object.x += object.xSpeed;
+        object.y += object.ySpeed;
+    }
+
+    draw(object) {
+        object.elem = document.getElementById('hazard-' + object.id);
+        object.elem.style = 'top: ' + object.y + 'px; left: ' + object.x + 'px; width: ' + object.width + 'px; height: '+ object.height + 'px;';
     }
 
     place() {
         this.x = Math.floor(Math.random() * this.xPlacementRangeMax);
         this.y = Math.floor(Math.random() * this.yPlacementRangeMax);
+
+        // Don't allow the hazard to be placed too close to the player.
+        if ( SimpleGame.distanceBetween(Player, this) < 150 ) {
+            this.place();
+        }
     }
 }
 
