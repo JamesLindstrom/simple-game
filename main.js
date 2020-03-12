@@ -192,6 +192,15 @@ var Player = {
             Player.y += Player.diagonalSpeed;
             Player.x -= Player.diagonalSpeed;
         }
+
+        Player.warp();
+    },
+
+    warp: function() {
+        if ( Player.x > SimpleGame.spaceWidth ) { Player.x = -1 * Player.width }
+        if ( Player.x < -1 * Player.width ) { Player.x = SimpleGame.spaceWidth }
+        if ( Player.y > SimpleGame.spaceHeight ) { Player.y = -1 * Player.height }
+        if ( Player.y < -1 * Player.height ) { Player.y = SimpleGame.spaceHeight }
     }
 }
 
