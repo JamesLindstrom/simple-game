@@ -28,28 +28,7 @@ var SimpleGame = {
         SimpleGame.space.dispatchEvent(gameTick);
 
         if ( SimpleGame.enemyCount < Math.floor(SimpleGame.currentTick / SimpleGame.enemySpacing) ) {
-            SimpleGame.enemyCount++;
-            var enemyOptions = {};
-
-            if ( SimpleGame.enemyCount % 3 === 0 ) {
-                enemyOptions.xSpeed = SimpleGame.enemyDiagonalSpeed;
-                enemyOptions.ySpeed = SimpleGame.enemyDiagonalSpeed;
-            } else if ( SimpleGame.enemyCount % 2 ) {
-                enemyOptions.xSpeed = SimpleGame.enemySpeed;
-                enemyOptions.ySpeed = 0;
-            } else {
-                enemyOptions.xSpeed = 0;
-                enemyOptions.ySpeed = SimpleGame.enemySpeed;
-            }
-
-            if ( SimpleGame.enemyCount > 10 ) {
-                enemyOptions.xSpeed = Math.floor(enemyOptions.xSpeed * 1.3);
-                enemyOptions.ySpeed = Math.floor(enemyOptions.ySpeed * 1.3);
-                enemyOptions.width = 30;
-                enemyOptions.height = 30;
-            }
-
-            var enemy = new Hazard(enemyOptions);
+            SimpleGame.createEnemy();
         }
 
         setTimeout(SimpleGame.tick, SimpleGame.tickSpacing);
@@ -61,6 +40,31 @@ var SimpleGame = {
 
     distanceBetween: function(obj1, obj2) {
         return Math.sqrt(Math.pow(obj2.x - obj1.x, 2) + Math.pow(obj2.y - obj1.y, 2));
+    },
+
+    createEnemy: function() {
+        SimpleGame.enemyCount++;
+        var enemyOptions = {};
+
+        if ( SimpleGame.enemyCount % 3 === 0 ) {
+            enemyOptions.xSpeed = SimpleGame.enemyDiagonalSpeed;
+            enemyOptions.ySpeed = SimpleGame.enemyDiagonalSpeed;
+        } else if ( SimpleGame.enemyCount % 2 ) {
+            enemyOptions.xSpeed = SimpleGame.enemySpeed;
+            enemyOptions.ySpeed = 0;
+        } else {
+            enemyOptions.xSpeed = 0;
+            enemyOptions.ySpeed = SimpleGame.enemySpeed;
+        }
+
+        if ( SimpleGame.enemyCount > 10 ) {
+            enemyOptions.xSpeed = Math.floor(enemyOptions.xSpeed * 1.3);
+            enemyOptions.ySpeed = Math.floor(enemyOptions.ySpeed * 1.3);
+            enemyOptions.width = 30;
+            enemyOptions.height = 30;
+        }
+
+        var enemy = new Hazard(enemyOptions);
     }
 }
 
@@ -87,8 +91,8 @@ class Hazard {
     }
 
     move(object) {
-        if ( object.x >= object.xPlacementRangeMax || object.x = 0 ) { object.xSpeed *= -1; }
-        if ( object.y >= object.yPlacementRangeMax || object.y = 0) { object.ySpeed *= -1; }
+        if ( object.x >= object.xPlacementRangeMax || object.x < 0 ) { object.xSpeed *= -1; }
+        if ( object.y >= object.yPlacementRangeMax || object.y < 0) { object.ySpeed *= -1; }
 
         object.x += object.xSpeed;
         object.y += object.ySpeed;
