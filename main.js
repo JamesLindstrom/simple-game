@@ -12,7 +12,7 @@ var SimpleGame = {
     currentTick: 0,
     enemyCount: 0,
     enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
-    enemySpeed: 8,
+    enemySpeed: 5,
 
     init: function() {
         SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
@@ -39,7 +39,11 @@ var SimpleGame = {
     },
 
     distanceBetween: function(obj1, obj2) {
-        return Math.sqrt(Math.pow(obj2.x - obj1.x, 2) + Math.pow(obj2.y - obj1.y, 2));
+        var obj1CenterX = obj1.x + obj1.width / 2,
+            obj1CenterY = obj1.y + obj1.height / 2,
+            obj2CenterX = obj2.x + obj2.width / 2,
+            obj2CenterY = obj2.y + obj2.height / 2;
+        return Math.sqrt(Math.pow(obj2CenterX - obj1CenterX, 2) + Math.pow(obj2CenterY - obj1CenterY, 2));
     },
 
     createEnemy: function() {
