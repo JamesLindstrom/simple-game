@@ -1,9 +1,9 @@
 * { margin: 0; padding: 0; }
-h1 { font-family: Georgia, serif; font-size: 30px; text-align: center; margin: 25px 0; }
+h1 { font-family: Gugi, Arial, sans-serif; font-size: 30px; text-align: center; margin: 25px 0; }
 
 /* Game Space */
-#game-space { margin: 0 auto; background-color: #ddd; width: 640px; height: 480px; position: relative; }
-#game-space.paused:after { content: 'PAUSED'; position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: block; background-color: #ffffffa0; padding-top: 230px; font-size: 20px; font-weight: bold; text-align: center;}
+#game-space { margin: 0 auto; background-color: #ddd; width: 640px; height: 480px; position: relative; font-family: Gugi, Arial, sans-serif; }
+#game-space.paused:after { content: 'Paused'; text-transform: uppercase; position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: block; background-color: #ffffffa0; padding-top: 230px; font-size: 20px; text-align: center;}
 
 #player { background-color: #00f; position: absolute; width: 30px; height: 30px; }
 
@@ -11,4 +11,4 @@ h1 { font-family: Georgia, serif; font-size: 30px; text-align: center; margin: 2
 
 #treasure { background-color: #ff0; position: absolute; width: 30px; height: 30px; }
 
-#score-text { font-size: 14px; font-family: Georgia, serif; margin-left: 5px; padding-top: 2px; }
+#score-text { font-size: 14px; margin-left: 5px; padding-top: 2px; }
