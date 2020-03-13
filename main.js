@@ -2,7 +2,7 @@ var gameTick = new CustomEvent('gameTick');
 
 var keyPressed = {};
 window.onkeyup = function(e) { keyPressed[e.keyCode] = false; }
-window.onkeydown = function(e) { keyPressed[e.keyCode] = true; }
+window.onkeydown = function(e) { keyPressed[e.keyCode] = true; console.log(e.keyCode); }
 
 var SimpleGame = {
     space: document.getElementById('game-space'),
@@ -11,7 +11,7 @@ var SimpleGame = {
     spaceHeight: 480,
     currentTick: 0,
     enemyCount: 0,
-    enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
+    enemySpacing: 300, // Spawn an enemy every 300 ticks or every 10 seconds
     enemySpeed: 5,
     paused: false,
     ended: false,
@@ -156,6 +156,10 @@ var Player = {
     width: 30,
     height: 30,
     speed: 10,
+    charged: false,
+    boostMultiplier: 2, // How much the boost affects speed
+    boostDuration: 15, // How long the boost lasts (15 means 15 ticks or 0.5 seconds)
+    boostCountdown: 0, // How many ticks of boost are left
 
     init: function() {
         SimpleGame.space.innerHTML += '<div id="player"></div>';
@@ -167,43 +171,66 @@ var Player = {
     tick: function() {
         // console.log('Player.tick');
         Player.elem = document.getElementById('player');
+        if ( keyPressed[32] ) { Player.boost(); } // Boost if space is pressed
         Player.move();
         Player.draw();
     },
 
+    boost: function() {
+        if ( Player.charged && Player.boostCountdown == 0 ) { // Return false if the player is not charged or if boost has already begun
+            Player.charged = false;
+            Player.boostCountdown = Player.boostDuration;
+        }
+    },
+
+    charge: function() {
+        Player.charged = true;
+        Player.elem = document.getElementById('player');
+    },
+
     draw: function() {
         Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px;';
+        var classes = [];
+        if ( Player.charged ) { classes.push('charged'); }
+        if ( Player.boostCountdown > 0 ) { classes.push('boosting'); }
+        Player.elem.className = classes.join(' ');
     },
 
     move: function() {
+        var boostFactor = 1;
+        if ( Player.boostCountdown > 0 ) {
+            boostFactor = Player.boostMultiplier;
+            Player.boostCountdown--;
+        }
+
         if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Left
-            Player.x -= Player.speed;
+            Player.x -= Player.speed * boostFactor;
         } else if ( keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Left-Up
-            Player.y -= Player.diagonalSpeed;
-            Player.x -= Player.diagonalSpeed;
+            Player.y -= Player.diagonalSpeed * boostFactor;
+            Player.x -= Player.diagonalSpeed * boostFactor;
         } else if ( !keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Up
-            Player.y -= Player.speed;
+            Player.y -= Player.speed * boostFactor;
         } else if ( !keyPressed['37'] && keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
             // Right-Up
-            Player.y -= Player.diagonalSpeed;
-            Player.x += Player.diagonalSpeed;
+            Player.y -= Player.diagonalSpeed * boostFactor;
+            Player.x += Player.diagonalSpeed * boostFactor;
         } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
             // Right
-            Player.x += Player.speed;
+            Player.x += Player.speed * boostFactor;
         } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && keyPressed['40'] ) {
             // Right-Down
-            Player.y += Player.diagonalSpeed;
-            Player.x += Player.diagonalSpeed;
+            Player.y += Player.diagonalSpeed * boostFactor;
+            Player.x += Player.diagonalSpeed * boostFactor;
         } else if ( !keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
             // Down
-            Player.y += Player.speed;
+            Player.y += Player.speed * boostFactor;
         } else if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
             // Left-Down
-            Player.y += Player.diagonalSpeed;
-            Player.x -= Player.diagonalSpeed;
+            Player.y += Player.diagonalSpeed * boostFactor;
+            Player.x -= Player.diagonalSpeed * boostFactor;
         }
 
         Player.warp();
@@ -236,6 +263,7 @@ var Treasure = {
 
         if( SimpleGame.checkCollision(Treasure, Player) ) {
             Score.value += 10;
+            Player.charge();
             Treasure.place();
         }
     },

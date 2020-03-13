@@ -7,7 +7,9 @@ h1 { font-family: Gugi, Arial, sans-serif; font-size: 30px; text-align: center; 
 #game-space.paused:after { content: 'Paused' }
 #game-space.game-over:after { content: 'Game Over'; }
 
-#player { background-color: #00f; position: absolute; width: 30px; height: 30px; }
+#player { background-color: #00f; position: absolute; width: 30px; height: 30px; transition: box-shadow .25s, background-color .25s; }
+#player.charged { box-shadow: 0px 0px 17px #00ff08; }
+#player.boosting { background-color: #00ff08; }
 
 #box, .hazard { border: 1px solid #000; position: absolute; }
 
