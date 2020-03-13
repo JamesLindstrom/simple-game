@@ -2,7 +2,7 @@ var gameTick = new CustomEvent('gameTick');
 
 var keyPressed = {};
 window.onkeyup = function(e) { keyPressed[e.keyCode] = false; }
-window.onkeydown = function(e) { keyPressed[e.keyCode] = true; console.log(e.keyCode); }
+window.onkeydown = function(e) { keyPressed[e.keyCode] = true; }
 
 var SimpleGame = {
     space: document.getElementById('game-space'),
@@ -144,7 +144,7 @@ class Hazard {
         this.y = Math.floor(Math.random() * this.yPlacementRangeMax);
 
         // Don't allow the hazard to be placed too close to the player.
-        if ( SimpleGame.distanceBetween(Player, this) < 150 ) {
+        if ( SimpleGame.distanceBetween(Player, this) < 180 ) {
             this.place();
         }
     }
