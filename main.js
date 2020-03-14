@@ -108,6 +108,7 @@ class Hazard {
         this.elem = document.getElementById('hazard-' + this.id);
         this.xPlacementRangeMax = SimpleGame.spaceWidth - this.width;
         this.yPlacementRangeMax = SimpleGame.spaceHeight - this.height;
+        this.alive = true;
         this.place();
         var myself = this;
         SimpleGame.space.addEventListener('gameTick', function(){ myself.tick(myself) }, false);
@@ -120,30 +121,45 @@ class Hazard {
         object.move(object);
         object.collide(object);
         object.draw(object);
-    }
 
-    burstResponse(object) {
-        if( SimpleGame.distanceBetween(Player, object) < Player.burstRadius + object.width / 2 ) {
-            object.elem.parentNode.removeChild(object.elem);
+        if ( object.destroyCountdown != undefined && object.destroyCountdown <= 0 ) {
             object.destroy(object);
         }
     }
 
+    burstResponse(object) {
+        if( SimpleGame.distanceBetween(Player, object) < Player.burstRadius + object.width / 2 ) {
+            var theta = Math.atan((object.y + object.height / 2 - Player.y - Player.height / 2) / (object.x + object.width / 2 - Player.x - Player.width / 2));
+            object.alive = false;
+            var newYSpeed = Math.sin(theta) * Player.burstRadius,
+                newXSpeed = Math.cos(theta) * Player.burstRadius;
+
+            var reverser = 1;
+            if ( object.x + object.width / 2 < Player.x + Player.width / 2 ) { reverser = -1; }
+            object.xSpeed = newXSpeed * reverser;
+            object.ySpeed = newYSpeed * reverser;
+            object.destroyCountdown = 10;
+        }
+    }
+
     collide(object) {
-        if ( SimpleGame.checkCollision(object, Player) ) {
+        if ( object.alive && SimpleGame.checkCollision(object, Player) ) {
             SimpleGame.gameOver();
         }
     }
 
     destroy(object) {
+        object.elem.parentNode.removeChild(object.elem);
         object.destroyed = true;
         object.x = -1000;
         object.y = -1000;
     }
 
     move(object) {
-        if ( object.x >= object.xPlacementRangeMax || object.x < 0 ) { object.xSpeed *= -1; }
-        if ( object.y >= object.yPlacementRangeMax || object.y < 0) { object.ySpeed *= -1; }
+        if ( object.alive ) {
+            if ( object.x >= object.xPlacementRangeMax || object.x < 0 ) { object.xSpeed *= -1; }
+            if ( object.y >= object.yPlacementRangeMax || object.y < 0) { object.ySpeed *= -1; }
+        }
 
         object.x += object.xSpeed;
         object.y += object.ySpeed;
