@@ -11,7 +11,7 @@ var SimpleGame = {
     spaceHeight: 480,
     currentTick: 0,
     enemyCount: 0,
-    enemySpacing: 300, // Spawn an enemy every 300 ticks or every 10 seconds
+    enemySpacing: 150, // Spawn an enemy every 300 ticks or every 10 seconds
     enemySpeed: 5,
     paused: false,
     ended: false,
@@ -73,8 +73,6 @@ var SimpleGame = {
         if ( SimpleGame.enemyCount > 10 ) {
             enemyOptions.xSpeed = Math.floor(enemyOptions.xSpeed * 1.3);
             enemyOptions.ySpeed = Math.floor(enemyOptions.ySpeed * 1.3);
-            enemyOptions.width = 30;
-            enemyOptions.height = 30;
         }
 
         var enemy = new Hazard(enemyOptions);
@@ -115,15 +113,31 @@ class Hazard {
     }
 
     tick(object) {
+        if ( object.destroyed ) { return false; } // Don't waste time on destroyed enemies
+        object.elem = document.getElementById('hazard-' + object.id);
+        if ( Player.bursting > 0 ) { object.burstResponse(object); }
         object.move(object);
         object.collide(object);
         object.draw(object);
+    }
+
+    burstResponse(object) {
+        if( SimpleGame.distanceBetween(Player, object) < Player.burstRadius + object.width / 2 ) {
+            object.elem.parentNode.removeChild(object.elem);
+            object.destroy(object);
+        }
     }
 
     collide(object) {
         if ( SimpleGame.checkCollision(object, Player) ) {
             SimpleGame.gameOver();
         }
+    }
+
+    destroy(object) {
+        object.destroyed = true;
+        object.x = -1000;
+        object.y = -1000;
     }
 
     move(object) {
@@ -135,7 +149,6 @@ class Hazard {
     }
 
     draw(object) {
-        object.elem = document.getElementById('hazard-' + object.id);
         object.elem.style = 'top: ' + object.y + 'px; left: ' + object.x + 'px; width: ' + object.width + 'px; height: '+ object.height + 'px;';
     }
 
@@ -157,9 +170,13 @@ var Player = {
     height: 30,
     speed: 10,
     charged: false,
+    superCharged: false,
     boostMultiplier: 2, // How much the boost affects speed
     boostDuration: 15, // How long the boost lasts (15 means 15 ticks or 0.5 seconds)
     boostCountdown: 0, // How many ticks of boost are left
+    burstRadius: 120,
+    burstDuration: 3,
+    bursting: 0,
 
     init: function() {
         SimpleGame.space.innerHTML += '<div id="player"></div>';
@@ -169,8 +186,8 @@ var Player = {
     },
 
     tick: function() {
-        // console.log('Player.tick');
         Player.elem = document.getElementById('player');
+        if ( Player.bursting > 0 ) { Player.bursting--; }
         if ( keyPressed[32] ) { Player.boost(); } // Boost if space is pressed
         Player.move();
         Player.draw();
@@ -180,19 +197,27 @@ var Player = {
         if ( Player.charged && Player.boostCountdown == 0 ) { // Return false if the player is not charged or if boost has already begun
             Player.charged = false;
             Player.boostCountdown = Player.boostDuration;
+            if ( Player.superCharged ) { Player.burst(); }
         }
     },
 
-    charge: function() {
+    burst: function() {
+        Player.superCharged = false;
+        Player.bursting = Player.burstDuration;
+    },
+
+    charge: function(superCharge) {
         Player.charged = true;
-        Player.elem = document.getElementById('player');
+        if ( superCharge ) { Player.superCharged = true; }
     },
 
     draw: function() {
         Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px;';
         var classes = [];
         if ( Player.charged ) { classes.push('charged'); }
+        if ( Player.superCharged ) { classes.push('super-charged'); }
         if ( Player.boostCountdown > 0 ) { classes.push('boosting'); }
+        if ( Player.bursting > 0 ) { classes.push('bursting'); }
         Player.elem.className = classes.join(' ');
     },
 
@@ -247,6 +272,8 @@ var Player = {
 var Treasure = {
     height: 30,
     width: 30,
+    superCount: 1, // Steps counting to supercharge
+    superInterval: 15, // Total steps between each supercharge
 
     init: function() {
         SimpleGame.space.innerHTML += '<div id="treasure"></div>';
@@ -259,13 +286,23 @@ var Treasure = {
 
     tick: function() {
         Treasure.elem = document.getElementById('treasure');
-        Treasure.draw();
 
         if( SimpleGame.checkCollision(Treasure, Player) ) {
             Score.value += 10;
-            Player.charge();
+            console.log(Treasure.superCount);
+
+            if ( Treasure.superCount >= Treasure.superInterval ) {
+                Player.charge(true);
+                Treasure.superCount = 0;
+            } else {
+                Player.charge(false);
+            }
+
+            Treasure.superCount++;
             Treasure.place();
         }
+
+        Treasure.draw();
     },
 
     draw: function() {
@@ -275,6 +312,12 @@ var Treasure = {
     place: function() {
         Treasure.x = Math.floor(Math.random() * Treasure.xPlacementRangeMax);
         Treasure.y = Math.floor(Math.random() * Treasure.yPlacementRangeMax);
+
+        if ( Treasure.superCount >= Treasure.superInterval ) {
+            Treasure.elem.className = 'super-charged';
+        } else {
+            Treasure.elem.className = '';
+        }
 
         // Don't allow the treasure to be placed too close to the player.
         if ( SimpleGame.distanceBetween(Player, Treasure) < 150 ) {
