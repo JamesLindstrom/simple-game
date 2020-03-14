@@ -80,8 +80,7 @@ var SimpleGame = {
 
     gameOver: function() {
         SimpleGame.ended = true;
-        SimpleGame.space.className = 'game-over'
-        Score.setHi();
+        SimpleGame.space.className = 'game-over';
     },
 
     pause: function() {
@@ -305,8 +304,7 @@ var Treasure = {
         Treasure.elem = document.getElementById('treasure');
 
         if( SimpleGame.checkCollision(Treasure, Player) ) {
-            Score.value += 10;
-            console.log(Treasure.superCount);
+            Score.increase(10);
 
             if ( Treasure.superCount >= Treasure.superInterval ) {
                 Player.charge(true);
@@ -318,8 +316,6 @@ var Treasure = {
             Treasure.superCount++;
             Treasure.place();
         }
-
-        Treasure.draw();
     },
 
     draw: function() {
@@ -340,6 +336,7 @@ var Treasure = {
         if ( SimpleGame.distanceBetween(Player, Treasure) < 150 ) {
             Treasure.place();
         }
+        Treasure.draw();
     }
 }
 
@@ -351,11 +348,6 @@ var Score = {
         SimpleGame.space.innerHTML += '<p id="score-text">Score: <span id="score"></span></p>';
         SimpleGame.space.innerHTML += '<p id="hi-score-text">Hi Score: <span id="hi-score"></span></p>';
         Score.draw();
-        SimpleGame.space.addEventListener('gameTick', Score.tick, false);
-    },
-
-    tick: function() {
-        Score.draw();
     },
 
     draw: function() {
@@ -363,6 +355,12 @@ var Score = {
         Score.hiElem = document.getElementById('hi-score');
         Score.elem.innerHTML = Score.value;
         Score.hiElem.innerHTML = Score.hi;
+    },
+
+    increase(scoreIncrease) {
+        Score.value += scoreIncrease;
+        Score.setHi();
+        Score.draw();
     },
 
     setHi: function() {
