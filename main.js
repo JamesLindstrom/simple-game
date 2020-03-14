@@ -81,6 +81,7 @@ var SimpleGame = {
     gameOver: function() {
         SimpleGame.ended = true;
         SimpleGame.space.className = 'game-over'
+        Score.setHi();
     },
 
     pause: function() {
@@ -328,9 +329,11 @@ var Treasure = {
 
 var Score = {
     value: 0,
+    hi: localStorage.getItem('simple_game_hi_score') || 0,
 
     init: function() {
         SimpleGame.space.innerHTML += '<p id="score-text">Score: <span id="score"></span></p>';
+        SimpleGame.space.innerHTML += '<p id="hi-score-text">Hi Score: <span id="hi-score"></span></p>';
         Score.draw();
         SimpleGame.space.addEventListener('gameTick', Score.tick, false);
     },
@@ -341,7 +344,17 @@ var Score = {
 
     draw: function() {
         Score.elem = document.getElementById('score');
+        Score.hiElem = document.getElementById('hi-score');
         Score.elem.innerHTML = Score.value;
+        Score.hiElem.innerHTML = Score.hi;
+    },
+
+    setHi: function() {
+        if ( Score.value > Score.hi ) {
+            Score.hi = Score.value;
+            localStorage.setItem('simple_game_hi_score', Score.value);
+            Score.draw();
+        }
     }
 }
 
