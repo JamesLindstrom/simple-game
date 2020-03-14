@@ -18,9 +18,9 @@ var SimpleGame = {
 
     init: function() {
         SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
+        Score.init();
         Player.init();
         Treasure.init();
-        Score.init();
         SimpleGame.tick();
 
         // Pause if "P" is pressed.
@@ -103,7 +103,10 @@ class Hazard {
         this.ySpeed = options['ySpeed'] || 0;
         this.xSpeed = options['xSpeed'] || 0;
         this.moveDirection = options['moveDirection'] || 'right';
-        SimpleGame.space.innerHTML += '<div class="hazard" id="hazard-' + this.id + '"></div>';
+        var elem = document.createElement('div');
+        elem.setAttribute('class', 'hazard');
+        elem.setAttribute('id', 'hazard-' + this.id);
+        SimpleGame.space.appendChild(elem);
         this.elem = document.getElementById('hazard-' + this.id);
         this.xPlacementRangeMax = SimpleGame.spaceWidth - this.width;
         this.yPlacementRangeMax = SimpleGame.spaceHeight - this.height;
@@ -115,7 +118,6 @@ class Hazard {
 
     tick(object) {
         if ( object.destroyed ) { return false; } // Don't waste time on destroyed enemies
-        object.elem = document.getElementById('hazard-' + object.id);
         if ( Player.bursting > 0 ) { object.burstResponse(object); }
         object.move(object);
         object.collide(object);
@@ -195,14 +197,15 @@ var Player = {
     bursting: 0,
 
     init: function() {
-        SimpleGame.space.innerHTML += '<div id="player"></div>';
+        var elem = document.createElement('div');
+        elem.setAttribute('id', 'player');
+        SimpleGame.space.appendChild(elem);
         Player.elem = document.getElementById('player');
         Player.diagonalSpeed = Math.round(Math.sqrt(Math.pow(Player.speed, 2) / 2));
         SimpleGame.space.addEventListener('gameTick', Player.tick, false);
     },
 
     tick: function() {
-        Player.elem = document.getElementById('player');
         if ( Player.bursting > 0 ) { Player.bursting--; }
         if ( keyPressed[32] ) { Player.boost(); } // Boost if space is pressed
         Player.move();
@@ -292,7 +295,9 @@ var Treasure = {
     superInterval: 15, // Total steps between each supercharge
 
     init: function() {
-        SimpleGame.space.innerHTML += '<div id="treasure"></div>';
+        var elem = document.createElement('div');
+        elem.setAttribute('id', 'treasure');
+        SimpleGame.space.appendChild(elem);
         Treasure.elem = document.getElementById('treasure');
         Treasure.xPlacementRangeMax = SimpleGame.spaceWidth - Treasure.width;
         Treasure.yPlacementRangeMax = SimpleGame.spaceHeight - Treasure.height;
@@ -301,8 +306,6 @@ var Treasure = {
     },
 
     tick: function() {
-        Treasure.elem = document.getElementById('treasure');
-
         if( SimpleGame.checkCollision(Treasure, Player) ) {
             Score.increase(10);
 
@@ -347,12 +350,12 @@ var Score = {
     init: function() {
         SimpleGame.space.innerHTML += '<p id="score-text">Score: <span id="score"></span></p>';
         SimpleGame.space.innerHTML += '<p id="hi-score-text">Hi Score: <span id="hi-score"></span></p>';
+        Score.elem = document.getElementById('score');
+        Score.hiElem = document.getElementById('hi-score');
         Score.draw();
     },
 
     draw: function() {
-        Score.elem = document.getElementById('score');
-        Score.hiElem = document.getElementById('hi-score');
         Score.elem.innerHTML = Score.value;
         Score.hiElem.innerHTML = Score.hi;
     },
