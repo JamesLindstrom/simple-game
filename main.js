@@ -22,6 +22,7 @@ var SimpleGame = {
         Player.init();
         Treasure.init();
         SimpleGame.tick();
+        SimpleGame.prepareMusic();
 
         // Pause if "P" is pressed.
         window.addEventListener('keydown', function(e){ if (e.keyCode == 80 && !SimpleGame.ended) { SimpleGame.pause(); } }, false );
@@ -81,6 +82,8 @@ var SimpleGame = {
     gameOver: function() {
         SimpleGame.ended = true;
         SimpleGame.space.className = 'game-over';
+        SimpleGame.backgroundMusic.stop();
+        SimpleGame.gameOverMusic.play();
     },
 
     pause: function() {
@@ -92,6 +95,12 @@ var SimpleGame = {
             SimpleGame.space.className = '';
             SimpleGame.tick();
         }
+    },
+
+    prepareMusic: function() {
+        SimpleGame.backgroundMusic = new Sound('background_music.mp3', { loop: true });
+        SimpleGame.gameOverMusic = new Sound('loss.mp3');
+        SimpleGame.backgroundMusic.play();
     }
 }
 
@@ -302,23 +311,27 @@ var Treasure = {
         Treasure.xPlacementRangeMax = SimpleGame.spaceWidth - Treasure.width;
         Treasure.yPlacementRangeMax = SimpleGame.spaceHeight - Treasure.height;
         Treasure.place();
+        Treasure.collectSound = new Sound('treasure_collect.mp3');
         SimpleGame.space.addEventListener('gameTick', Treasure.tick, false);
     },
 
     tick: function() {
-        if( SimpleGame.checkCollision(Treasure, Player) ) {
-            Score.increase(10);
+        if( SimpleGame.checkCollision(Treasure, Player) ) { Treasure.collect(); }
+    },
 
-            if ( Treasure.superCount >= Treasure.superInterval ) {
-                Player.charge(true);
-                Treasure.superCount = 0;
-            } else {
-                Player.charge(false);
-            }
+    collect: function() {
+        Treasure.collectSound.play();
+        Score.increase(10);
 
-            Treasure.superCount++;
-            Treasure.place();
+        if ( Treasure.superCount >= Treasure.superInterval ) {
+            Player.charge(true);
+            Treasure.superCount = 0;
+        } else {
+            Player.charge(false);
         }
+
+        Treasure.superCount++;
+        Treasure.place();
     },
 
     draw: function() {
@@ -375,4 +388,22 @@ var Score = {
     }
 }
 
-SimpleGame.init();
+class Sound {
+    constructor(src, options) {
+        if ( options == undefined ) { options = {}; }
+        this.sound = document.createElement("audio");
+        this.sound.src = 'sounds/' + src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        if ( options["loop"] ) { this.sound.setAttribute("loop", true); }
+        SimpleGame.space.appendChild(this.sound);
+    }
+
+    play() {
+        this.sound.play();
+    }
+
+    stop() {
+        this.sound.pause();
+    }
+}
