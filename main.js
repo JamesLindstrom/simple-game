@@ -25,7 +25,7 @@ var SimpleGame = {
         Player.init();
         Treasure.init();
         SimpleGame.tick();
-        SimpleGame.prepareMusic();
+        SimpleGame.prepareSounds();
 
         // Pause if "P" is pressed.
         window.addEventListener('keydown', function(e){ if (e.keyCode == 80 && !SimpleGame.ended) { SimpleGame.pause(); } }, false );
@@ -93,18 +93,22 @@ var SimpleGame = {
 
     pause: function() {
         if ( SimpleGame.paused == false ) {
+            SimpleGame.pauseSound.play();
             SimpleGame.paused = true;
             SimpleGame.space.className = 'paused';
+            SimpleGame.backgroundMusic.stop();
         } else {
             SimpleGame.paused = false;
             SimpleGame.space.className = '';
+            SimpleGame.backgroundMusic.play();
             SimpleGame.tick();
         }
     },
 
-    prepareMusic: function() {
+    prepareSounds: function() {
         SimpleGame.backgroundMusic = new Sound('background_music.mp3', { loop: true });
         SimpleGame.gameOverMusic = new Sound('loss.mp3');
+        SimpleGame.pauseSound = new Sound('pause.mp3');
         SimpleGame.backgroundMusic.play();
     }
 }
