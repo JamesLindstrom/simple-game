@@ -15,7 +15,7 @@ h1 { font-family: Gugi, Arial, sans-serif; font-size: 30px; text-align: center; 
 #player.charged { box-shadow: 0px 0px 17px #00ff08; }
 #player.boosting { background-color: #00ff08; }
 
-.hazard { border: 1px solid #000; position: absolute; }
+.hazard { border: 1px solid #000; position: absolute; width: 0; height: 0; transition: width .25s, height .25s; }
 
 #treasure { background-color: #ff0; position: absolute; width: 30px; height: 30px; }
 
