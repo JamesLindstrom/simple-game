@@ -15,8 +15,11 @@ var SimpleGame = {
     enemySpeed: 5,
     paused: false,
     ended: false,
+    initialized: false,
 
     init: function() {
+        if ( SimpleGame.initialized ) { return false; } // Do not double initialize
+
         SimpleGame.enemyDiagonalSpeed = Math.round(Math.sqrt(Math.pow(SimpleGame.enemySpeed, 2) / 2));
         Score.init();
         Player.init();
@@ -26,6 +29,8 @@ var SimpleGame = {
 
         // Pause if "P" is pressed.
         window.addEventListener('keydown', function(e){ if (e.keyCode == 80 && !SimpleGame.ended) { SimpleGame.pause(); } }, false );
+
+        SimpleGame.initialized = true;
     },
 
     tick: function() {
@@ -400,7 +405,11 @@ class Sound {
     }
 
     play() {
-        this.sound.play();
+        if ( this.sound.paused ) {
+            this.sound.play();
+        } else {
+            this.sound.currentTime = 0;
+        }
     }
 
     stop() {
