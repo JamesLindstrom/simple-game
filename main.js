@@ -150,8 +150,8 @@ class Hazard {
         if( SimpleGame.distanceBetween(Player, object) < Player.burstRadius + object.width / 2 ) {
             var theta = Math.atan((object.y + object.height / 2 - Player.y - Player.height / 2) / (object.x + object.width / 2 - Player.x - Player.width / 2));
             object.alive = false;
-            var newYSpeed = Math.sin(theta) * Player.burstRadius,
-                newXSpeed = Math.cos(theta) * Player.burstRadius;
+            var newYSpeed = Math.sin(theta) * Player.burstRadius / 2,
+                newXSpeed = Math.cos(theta) * Player.burstRadius / 2;
 
             var reverser = 1;
             if ( object.x + object.width / 2 < Player.x + Player.width / 2 ) { reverser = -1; }
@@ -220,6 +220,7 @@ var Player = {
         SimpleGame.space.appendChild(elem);
         Player.elem = document.getElementById('player');
         Player.diagonalSpeed = Math.round(Math.sqrt(Math.pow(Player.speed, 2) / 2));
+        Player.burstSound = new Sound('burst.mp3');
         SimpleGame.space.addEventListener('gameTick', Player.tick, false);
     },
 
@@ -239,6 +240,7 @@ var Player = {
     },
 
     burst: function() {
+        Player.burstSound.play();
         Player.superCharged = false;
         Player.bursting = Player.burstDuration;
     },
