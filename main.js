@@ -193,7 +193,7 @@ class Hazard {
         this.y = Math.floor(Math.random() * this.yPlacementRangeMax);
 
         // Don't allow the hazard to be placed too close to the player.
-        if ( SimpleGame.distanceBetween(Player, this) < 180 ) {
+        if ( SimpleGame.distanceBetween(Player, this) < 240 ) {
             this.place();
         }
     }
@@ -213,6 +213,7 @@ var Player = {
     burstRadius: 120,
     burstDuration: 3,
     bursting: 0,
+    direction: 0,
 
     init: function() {
         var elem = document.createElement('div');
@@ -245,13 +246,26 @@ var Player = {
         Player.bursting = Player.burstDuration;
     },
 
+    changeDirection: function(endDegree) {
+        var currentDegree = Player.direction % 360,
+            difference = endDegree - currentDegree;
+
+        if ( difference > 180 ) {
+            difference -= 360;
+        } else if ( difference < -180 ) {
+            difference += 360;
+        }
+
+        Player.direction += difference;
+    },
+
     charge: function(superCharge) {
         Player.charged = true;
         if ( superCharge ) { Player.superCharged = true; }
     },
 
     draw: function() {
-        Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px;';
+        Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px; transform: rotateZ(' + Player.direction + 'deg);';
         var classes = [];
         if ( Player.charged ) { classes.push('charged'); }
         if ( Player.superCharged ) { classes.push('super-charged'); }
@@ -270,31 +284,39 @@ var Player = {
         if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Left
             Player.x -= Player.speed * boostFactor;
+            Player.changeDirection(270);
         } else if ( keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Left-Up
             Player.y -= Player.diagonalSpeed * boostFactor;
             Player.x -= Player.diagonalSpeed * boostFactor;
+            Player.changeDirection(315);
         } else if ( !keyPressed['37'] && keyPressed['38'] && !keyPressed['39'] && !keyPressed['40'] ) {
             // Up
             Player.y -= Player.speed * boostFactor;
+            Player.changeDirection(0);
         } else if ( !keyPressed['37'] && keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
             // Right-Up
             Player.y -= Player.diagonalSpeed * boostFactor;
             Player.x += Player.diagonalSpeed * boostFactor;
+            Player.changeDirection(45);
         } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && !keyPressed['40'] ) {
             // Right
             Player.x += Player.speed * boostFactor;
+            Player.changeDirection(90);
         } else if ( !keyPressed['37'] && !keyPressed['38'] && keyPressed['39'] && keyPressed['40'] ) {
             // Right-Down
             Player.y += Player.diagonalSpeed * boostFactor;
             Player.x += Player.diagonalSpeed * boostFactor;
+            Player.changeDirection(135);
         } else if ( !keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
             // Down
             Player.y += Player.speed * boostFactor;
+            Player.changeDirection(180);
         } else if ( keyPressed['37'] && !keyPressed['38'] && !keyPressed['39'] && keyPressed['40'] ) {
             // Left-Down
             Player.y += Player.diagonalSpeed * boostFactor;
             Player.x -= Player.diagonalSpeed * boostFactor;
+            Player.changeDirection(225);
         }
 
         Player.warp();
