@@ -2,57 +2,27 @@
 h1 { font-family: Gugi, Arial, sans-serif; font-size: 30px; text-align: center; margin: 25px 0; }
 
 /* Game Space */
-#game-space { margin: 0 auto; background-color: #ddd; width: 640px; height: 480px; position: relative; font-family: Gugi, Arial, sans-serif; overflow: hidden; }
-#game-space:after { text-transform: uppercase; position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: block; background-color: #ffffffa0; padding-top: 230px; font-size: 20px; text-align: center;}
+#game-space { margin: 0 auto; background-color: #000; background-image: url('sprites/background.png'); color: #fff; width: 640px; height: 480px; position: relative; font-family: Gugi, Arial, sans-serif; overflow: hidden; z-index: -5; }
+#game-space:after { text-transform: uppercase; position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: block; background-color: #ffffffa0; padding-top: 230px; font-size: 20px; text-align: center; text-shadow: 1px 1px #000; z-index: 5; }
 #game-space.paused:after { content: 'Paused' }
 #game-space.game-over:after { content: 'Game Over'; }
 #game-space audio { display: none; }
 
-#player { border-radius: 10px 10px 0 0; transform: rotateZ(0deg); background-color: #00f; position: absolute; width: 30px; height: 30px; transition: box-shadow .25s, background-color .25s, transform .25s; }
+#player { border-radius: 15px 15px 0 0; margin: -5px; transform: rotateZ(0deg); background-image: url('sprites/player.png'); position: absolute; width: 40px; height: 40px; transition: box-shadow .25s, background-color .25s, transform .25s; }
 #player:before, #player:after { content: ''; position: absolute; display: block; border-radius: 50%; border-width: 2px; border: 1px solid #00ff08; top: 5px; right: 5px; bottom: 5px; left: 5px; opacity: 0; transition: top .25s, right .25s, bottom .25s, left .25s, opacity .25s; }
-#player:after { background-color: #00ff08; transition: top 100ms, right 100ms, bottom 100ms, left 100ms, opacity 100ms; }
+#player:after { background-color: #00ff08; background-color: #00ff08bb; transition: top 100ms, right 100ms, bottom 100ms, left 100ms, opacity 100ms; }
 #player.super-charged:before, #player.bursting:after { left: -95px; top: -95px; right: -95px; bottom: -95px; opacity: 1; }
 #player.charged { box-shadow: 0px 0px 17px #00ff08; }
 #player.boosting { background-color: #00ff08; }
 
-.hazard { border: 1px solid #000; position: absolute; width: 0; height: 0; transition: width .25s, height .25s; }
+.hazard { background-size: contain; background-position: center; position: absolute; width: 0; height: 0; transition: width .25s, height .25s; }
+.hazard:after, .hazard:before { content: ''; background-size: contain; background-position: center; position: absolute; width: 100%; height: 100%; transition: width .25s, height .25s; }
+.hazard:before { background-image: url('sprites/hazard.png'); }
+.hazard:after { background-image: url('sprites/hazard_eye.png'); }
 
-#treasure { background-color: #ff0; position: absolute; width: 30px; height: 30px; }
+#treasure { background-image: url('sprites/treasure.png'); position: absolute; width: 30px; height: 30px; }
+#treasure.super-charged { background-image: url('sprites/treasure_charged.png'); }
 
-#score-text, #hi-score-text { font-size: 14px; position: absolute; top: 3px; text-shadow: 1px 1px #fff; z-index: 100; }
+#score-text, #hi-score-text { font-size: 14px; position: absolute; top: 3px; text-shadow: 1px 1px #000; z-index: 100; }
 #score-text { left: 5px; }
 #hi-score-text { right: 5px; }
-
-@-webkit-keyframes treasure_super_charge {
-  0% { background-color: #ff0; }
-  50% { background-color: #00ff08; }
-  100% { background-color: #ff0; }
-}
-@-moz-keyframes treasure_super_charge {
-  0% { background-color: #ff0; }
-  50% { background-color: #00ff08; }
-  100% { background-color: #ff0; }
-}
-@-ms-keyframes treasure_super_charge {
-  0% { background-color: #ff0; }
-  50% { background-color: #00ff08; }
-  100% { background-color: #ff0; }
-}
-@-o-keyframes treasure_super_charge {
-  0% { background-color: #ff0; }
-  50% { background-color: #00ff08; }
-  100% { background-color: #ff0; }
-}
-@keyframes treasure_super_charge {
-  0% { background-color: #ff0; }
-  50% { background-color: #00ff08; }
-  100% { background-color: #ff0; }
-}
-
-#treasure.super-charged {
-  -webkit-animation: treasure_super_charge .5s infinite normal;
-	-moz-animation: treasure_super_charge .5s infinite normal;
-	-ms-animation: treasure_super_charge .5s infinite normal;
-	-o-animation: treasure_super_charge .5s infinite normal;
-	animation: treasure_super_charge .5s infinite normal;
-}

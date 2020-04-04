@@ -1,0 +1,92 @@
+@-webkit-keyframes treasure_pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@-moz-keyframes treasure_pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@-ms-keyframes treasure_pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@-o-keyframes treasure_pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@keyframes treasure_pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+#treasure {
+  -webkit-animation: treasure_pulse 1s infinite normal;
+	-moz-animation: treasure_pulse 1s infinite normal;
+	-ms-animation: treasure_pulse 1s infinite normal;
+	-o-animation: treasure_pulse 1s infinite normal;
+	animation: treasure_pulse 1s infinite normal;
+}
+
+#treasure.super-charged {
+  -webkit-animation-duration: .5s;
+	-moz-animation-duration: .5s;
+	-ms-animation-duration: .5s;
+	-o-animation-duration: .5s;
+	animation-duration: .5s;
+}
+
+@-webkit-keyframes treasure_appear {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@-moz-keyframes treasure_appear {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@-ms-keyframes treasure_appear {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@-o-keyframes treasure_appear {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@keyframes treasure_appear {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+/* #treasure.animation-toggle-1, #treasure.animation-toggle-2 { animation: treasure_appear .5s normal; } */
+
+@-webkit-keyframes hazard_blades {
+  0% { transform: rotateZ(0deg); }
+  90% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(90deg); }
+}
+@-moz-keyframes hazard_blades {
+  0% { transform: rotateZ(0deg); }
+  90% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(90deg); }
+}
+@-ms-keyframes hazard_blades {
+  0% { transform: rotateZ(0deg); }
+  90% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(90deg); }
+}
+@-o-keyframes hazard_blades {
+  0% { transform: rotateZ(0deg); }
+  90% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(90deg); }
+}
+@keyframes hazard_blades {
+  0% { transform: rotateZ(0deg); }
+  90% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(90deg); }
+}
+
+.hazard:before { animation: hazard_blades 5s infinite normal; }
