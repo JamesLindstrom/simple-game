@@ -207,7 +207,7 @@ var Player = {
     speed: 10,
     charged: false,
     superCharged: false,
-    boostMultiplier: 2, // How much the boost effects speed
+    boostMultiplier: 2, // How much the boost affects speed
     boostDuration: 15, // How long the boost lasts (15 means 15 ticks or 0.5 seconds)
     boostCountdown: 0, // How many ticks of boost are left
     boostEffects: [], // BoostEffect objects used as a graphical flourish
