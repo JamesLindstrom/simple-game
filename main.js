@@ -207,9 +207,10 @@ var Player = {
     speed: 10,
     charged: false,
     superCharged: false,
-    boostMultiplier: 2, // How much the boost affects speed
+    boostMultiplier: 2, // How much the boost effects speed
     boostDuration: 15, // How long the boost lasts (15 means 15 ticks or 0.5 seconds)
     boostCountdown: 0, // How many ticks of boost are left
+    boostEffects: [], // BoostEffect objects used as a graphical flourish
     burstRadius: 120,
     burstDuration: 3,
     bursting: 0,
@@ -222,12 +223,17 @@ var Player = {
         Player.elem = document.getElementById('player');
         Player.diagonalSpeed = Math.round(Math.sqrt(Math.pow(Player.speed, 2) / 2));
         Player.burstSound = new Sound('burst.mp3');
+        Player.createBoostEffects();
         SimpleGame.space.addEventListener('gameTick', Player.tick, false);
     },
 
     tick: function() {
         if ( Player.bursting > 0 ) { Player.bursting--; }
         if ( keyPressed[32] ) { Player.boost(); } // Boost if space is pressed
+        if ( Player.boostCountdown > 0 ) {
+            var boostEffect = Player.boostEffects[Player.boostCountdown - 1];
+            boostEffect.place(boostEffect);
+        }
         Player.move();
         Player.draw();
     },
@@ -262,6 +268,12 @@ var Player = {
     charge: function(superCharge) {
         Player.charged = true;
         if ( superCharge ) { Player.superCharged = true; }
+    },
+
+    createBoostEffects: function() {
+        for (var i = 0; i < Player.boostDuration; i++) {
+            Player.boostEffects.push(new BoostEffect(i));
+        }
     },
 
     draw: function() {
@@ -327,6 +339,48 @@ var Player = {
         if ( Player.x < -1 * Player.width ) { Player.x = SimpleGame.spaceWidth }
         if ( Player.y > SimpleGame.spaceHeight ) { Player.y = -1 * Player.height }
         if ( Player.y < -1 * Player.height ) { Player.y = SimpleGame.spaceHeight }
+    }
+}
+
+class BoostEffect {
+    constructor(id) {
+        this.id = id;
+        this.width = 30;
+        this.height = 30;
+        this.maxBoostDecay = 15;
+        this.boostDecay = 0;
+        this.x = -100;
+        this.y = -100;
+        var elem = document.createElement('div');
+        elem.setAttribute('class', 'boost-effect');
+        elem.setAttribute('id', 'boost-effect-' + this.id);
+        SimpleGame.space.appendChild(elem);
+        this.elem = document.getElementById('boost-effect-' + this.id);
+        var myself = this;
+        SimpleGame.space.addEventListener('gameTick', function(){ myself.tick(myself) }, false);
+    }
+
+    tick(object) {
+        if ( object.boostDecay > 0 ) {
+            object.boostDecay--;
+
+            if ( object.boostDecay === 0 ) {
+                object.x = -100;
+            }
+
+            object.draw(object);
+        }
+    }
+
+    draw(object) {
+        var decayProgress = object.boostDecay / object.maxBoostDecay;
+        object.elem.style = 'top: ' + object.y + 'px; left: ' + object.x + 'px; opacity: ' + decayProgress + '; transform: scale(' + ( decayProgress + 0.5 ) + ');';
+    }
+
+    place(object) {
+        object.x = Player.x;
+        object.y = Player.y;
+        object.boostDecay = object.maxBoostDecay;
     }
 }
 
