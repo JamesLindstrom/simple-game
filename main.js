@@ -199,7 +199,7 @@ function runSpaceAggregator() {
         }
 
         draw(object) {
-            object.elem.style = 'top: ' + object.y + 'px; left: ' + object.x + 'px; width: ' + object.width + 'px; height: '+ object.height + 'px;';
+            object.elem.style.cssText = 'top: ' + object.y + 'px; left: ' + object.x + 'px; width: ' + object.width + 'px; height: '+ object.height + 'px;';
         }
 
         place() {
@@ -291,7 +291,7 @@ function runSpaceAggregator() {
         },
 
         draw: function() {
-            Player.elem.style = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px; transform: rotateZ(' + Player.direction + 'deg);';
+            Player.elem.style.cssText = 'top: ' + Player.y + 'px; left: ' + Player.x + 'px; transform: rotateZ(' + Player.direction + 'deg);';
             var classes = [];
             if ( Player.charged ) { classes.push('charged'); }
             if ( Player.superCharged ) { classes.push('super-charged'); }
@@ -388,7 +388,7 @@ function runSpaceAggregator() {
 
         draw(object) {
             var decayProgress = object.boostDecay / object.maxBoostDecay;
-            object.elem.style = 'top: ' + object.y + 'px; left: ' + object.x + 'px; opacity: ' + decayProgress + '; transform: scale(' + ( decayProgress + 0.5 ) + ');';
+            object.elem.style.cssText = 'top: ' + object.y + 'px; left: ' + object.x + 'px; opacity: ' + decayProgress + '; transform: scale(' + ( decayProgress + 0.5 ) + ');';
         }
 
         place(object) {
@@ -436,7 +436,7 @@ function runSpaceAggregator() {
         },
 
         draw: function() {
-            Treasure.elem.style = 'top: ' + Treasure.y + 'px; left: ' + Treasure.x + 'px;';
+            Treasure.elem.style.cssText = 'top: ' + Treasure.y + 'px; left: ' + Treasure.x + 'px;';
         },
 
         place: function() {
