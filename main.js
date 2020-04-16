@@ -4,8 +4,8 @@ var keyPressed = {};
 window.onkeyup = function(e) { keyPressed[e.keyCode] = false; }
 window.onkeydown = function(e) { keyPressed[e.keyCode] = true; }
 
-function runGame() {
-    document.removeEventListener('keydown', runGame, false);
+function runSpaceAggregator() {
+    document.removeEventListener('keydown', runSpaceAggregator, false);
 
     var SimpleGame = {
         space: document.getElementById('game-space'),
@@ -115,7 +115,7 @@ function runGame() {
         },
 
         prepareReset: function() {
-            document.addEventListener('keydown', runGame, false);
+            document.addEventListener('keydown', runSpaceAggregator, false);
             SimpleGame.space.className = 'reset';
         },
 
@@ -516,4 +516,4 @@ function runGame() {
     SimpleGame.init();
 }
 
-document.addEventListener('keydown', runGame, false);
+document.addEventListener('keydown', runSpaceAggregator, false);
