@@ -9,6 +9,8 @@ h1 { font-family: Gugi, Arial, sans-serif; font-size: 30px; text-align: center; 
 #game-space.reset:after { content: 'Press Any Key to Play Again' }
 #game-space audio { display: none; }
 
+#load-images { display: none; }
+
 #instructions { padding: 20px; height: calc(100% - 40px); background-color: #ffffff77; text-shadow: 0px 0px 10px #000; }
 #instructions h2 { text-align: center; margin-bottom: 20px; }
 #instructions p { font-family: Arial, sans-serif; clear: both; }
